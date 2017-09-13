@@ -19,8 +19,22 @@
 - name: "Add Jenkins repository"
   get_url: url="http://pkg.jenkins-ci.org/redhat/jenkins.repo" dest="/etc/yum.repos.d/jenkins.repo"
 
-- name: "Import Jenkins key"
-  command: "rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key"
+- name: "Create directory for public keys"
+  file:
+    state: directory
+    path: "/var/lib/rpm/pubkeys/"
+    owner: "root"
+    group: "root"
+    mode: 755
+
+- name: "Retrieve Jenkins repository public key"
+  get_url:
+    url: https://jenkins-ci.org/redhat/jenkins-ci.org.key
+    dest: /var/lib/rpm/pubkeys/jenkins-ci.org.key
+
+- name: "Import Jenkins repository public key"
+  command: "rpm --import /var/lib/rpm/pubkeys/jenkins-ci.org.key"
+#  command: "rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key"
 
 - name: "Install Jenkins"
   yum:
@@ -30,13 +44,19 @@
 - name: Set JENKINS_HOME
   lineinfile:
     create: "yes"
-    dest: "/etc/default/jenkins"
+    dest: "/etc/sysconfig/jenkins"
     line: "JENKINS_HOME={{ jenkins_home }}"
     regexp: '^JENKINS_HOME='
     state: "present"
 
 - name: "Set Jenkins command line options"
   lineinfile:
-    dest: /etc/default/jenkins
-    regexp: '^JAVA_ARGS='
-    line: "JAVA_ARGS=\"{{ jenkins_java_opts }}\""
+    dest: /etc/sysconfig/jenkins
+    regexp: '^JENKINS_JAVA_OPTIONS='
+    line: "JENKINS_JAVA_OPTIONS=\"{{ jenkins_java_opts }}\""
+
+- name: "Set Jenkins port"
+  lineinfile:
+    dest: "/etc/sysconfig/jenkins"
+    regexp: '^JENKINS_PORT='
+    line: 'JENKINS_PORT="{{ jenkins_port }}"'
