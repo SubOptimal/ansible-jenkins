@@ -43,4 +43,6 @@
 
 - wait_for:
     path: "{{ jenkins_home }}/plugins/{{ item }}.jpi"
+    timeout: 600
   with_items: "{{ jenkins_plugins }}"
+
