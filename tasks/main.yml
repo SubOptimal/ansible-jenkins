@@ -13,3 +13,4 @@
 - include: "{{ jenkins_install_via }}/stop.yml"
 - include: "configure-jenkins.yml"
 
+- include: "{{ jenkins_install_via }}/start.yml"
