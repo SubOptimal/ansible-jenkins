@@ -1,7 +1,7 @@
 - name: "Make sure Jenkins is stopped"
-  service: 
-    name: "jenkins"
-    state: "stopped"
+  service:
+    name: jenkins
+    state: stopped
   ignore_errors: yes
 
 - name: "Create Jenkins group"
@@ -19,23 +19,12 @@
     - git
 
 - name: "Add Jenkins repository"
-  get_url: url="http://pkg.jenkins-ci.org/redhat/jenkins.repo" dest="/etc/yum.repos.d/jenkins.repo"
-
-- name: "Create directory for public keys"
-  file:
-    state: directory
-    path: "/var/lib/rpm/pubkeys/"
-    owner: "root"
-    group: "root"
-    mode: 755
-
-- name: "Retrieve Jenkins repository public key"
-  get_url:
-    url: https://jenkins-ci.org/redhat/jenkins-ci.org.key
-    dest: /var/lib/rpm/pubkeys/jenkins-ci.org.key
-    owner: "root"
-    group: "root"
-    mode: 644
+  yum_repository:
+    name: "jenkins"
+    description: "official Jenkins repository"
+    baseurl: "http://pkg.jenkins-ci.org/redhat"
+    gpgkey: "https://pkg.jenkins.io/redhat/jenkins-ci.org.key"
+    gpgcheck: yes
 
 - name: "Install Jenkins"
   yum:
