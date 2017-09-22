@@ -1,5 +1,4 @@
 ---
-
 - name: Job directories are present
   file:
     path: "{{ jenkins_home }}/jobs/{{ item }}"

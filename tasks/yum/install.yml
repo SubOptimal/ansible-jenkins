@@ -1,26 +1,20 @@
-- name: "Make sure Jenkins is stopped"
-  service:
-    name: jenkins
-    state: stopped
-  ignore_errors: yes
-
-- name: "Create Jenkins group"
-  group:
-    name: "{{ jenkins_config_group }}"
-    state: present
-
-- name: "Create Jenkins user"
-  user: name="{{ jenkins_config_owner }}" groups="{{ jenkins_config_group }}" state="present"
+---
+- name: "Verify Ansible meets version requirements"
+  assert:
+    that: "ansible_version.full | version_compare('2.1', '>=')"
+    msg: "Ansible version must be >= 2.1 but it is {{ ansible_version.full }}"
 
 - name: "Install Java and Git"
-  yum: name="java" state="present"
+  yum:
+    name: "{{ item }}"
+    state: present
   with_items:
     - java
     - git
 
 - name: "Add Jenkins repository"
   yum_repository:
-    name: "jenkins"
+    name: jenkins
     description: "official Jenkins repository"
     baseurl: "http://pkg.jenkins-ci.org/redhat"
     gpgkey: "https://pkg.jenkins.io/redhat/jenkins-ci.org.key"
@@ -31,15 +25,13 @@
     name: "jenkins-{{ jenkins_version }}"
     state: present
 
-- name: Set JENKINS_HOME
+- name: "Set Jenkins home"
   lineinfile:
-    create: "yes"
     dest: "/etc/sysconfig/jenkins"
     line: "JENKINS_HOME={{ jenkins_home }}"
     regexp: '^JENKINS_HOME='
-    state: "present"
 
-- name: "Set Jenkins command line options"
+- name: "Set Java options"
   lineinfile:
     dest: /etc/sysconfig/jenkins
     regexp: '^JENKINS_JAVA_OPTIONS='

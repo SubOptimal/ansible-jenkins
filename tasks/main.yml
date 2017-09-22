@@ -1,6 +1,10 @@
 ---
-
+- include: "{{ jenkins_install_via }}/stop.yml"
 - include: "{{ jenkins_install_via }}/install.yml"
+
+# use a configuration with disabled security otherwise the plugin installation
+# will fail on a re-run if security is configured in a later step
+- include: "pre-configure-jenkins.yml"
 
 - include: "{{ jenkins_install_via }}/start.yml"
 - include: "configure-plugins.yml"
@@ -11,6 +15,6 @@
 # Jenkins should not be running while we change the configuration
 # data, otherwise some files might be overwritten when it restarts
 - include: "{{ jenkins_install_via }}/stop.yml"
-- include: "configure-jenkins.yml"
+- include: "post-configure-jenkins.yml"
 
 - include: "{{ jenkins_install_via }}/start.yml"

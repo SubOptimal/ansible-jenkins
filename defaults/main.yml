@@ -18,7 +18,8 @@ jenkins_source_dir_configs: "{{ playbook_dir }}/jenkins-configs"
 jenkins_source_dir_jobs: "{{ jenkins_source_dir_configs }}/jobs"
 
 # config.xml template source
-jenkins_source_config_xml: "{{ jenkins_source_dir_configs }}/config.xml"
+jenkins_source_pre_config_xml: "{{ jenkins_source_dir_configs }}/config.xml_pre_config"
+jenkins_source_post_config_xml: "{{ jenkins_source_dir_configs }}/config.xml_post_config"
 
 # Include custom files for jenkins installation
 jenkins_include_custom_files: false

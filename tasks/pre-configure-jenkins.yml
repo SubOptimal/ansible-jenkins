@@ -1,0 +1,8 @@
+---
+- name: "Copy pre-installation config.xml"
+  template:
+    src: "{{ jenkins_source_pre_config_xml }}"
+    dest: "{{ jenkins_home }}/config.xml"
+    mode: 0644
+    owner: "{{ jenkins_config_owner }}"
+    group: "{{ jenkins_config_group }}"

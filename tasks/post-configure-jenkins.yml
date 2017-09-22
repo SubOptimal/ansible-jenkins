@@ -1,14 +1,13 @@
 ---
-
-- name: Configuration file is up to date (config.xml)
+- name: "Copy post-installation config.xml"
   template:
-    src: "{{ jenkins_source_config_xml }}"
+    src: "{{ jenkins_source_post_config_xml }}"
     dest: "{{ jenkins_home }}/config.xml"
     mode: 0644
     owner: "{{ jenkins_config_owner }}"
     group: "{{ jenkins_config_group }}"
 
-- name: Configure Jenkins location
+- name: "Configure Jenkins location"
   template:
     src: files/jenkins.model.JenkinsLocationConfiguration.xml.j2
     dest: "{{ jenkins_home }}/jenkins.model.JenkinsLocationConfiguration.xml"
@@ -16,7 +15,7 @@
     owner: "{{ jenkins_config_owner }}"
     group: "{{ jenkins_config_group }}"
 
-- name: Create intermediate dirs for custom files
+- name: "Create intermediate dirs for custom files"
   file:
     path: "{{ jenkins_home }}/{{ item.dest | dirname }}"
     owner: "{{ jenkins_config_owner }}"
@@ -26,7 +25,7 @@
   when: jenkins_include_custom_files
   with_items: "{{ jenkins_custom_files }}"
 
-- name: Configure custom files
+- name: "Copy custom files"
   template:
     src: "{{ jenkins_source_dir_configs }}/{{ item.src }}"
     dest: "{{ jenkins_home }}/{{ item.dest }}"
@@ -36,7 +35,7 @@
   when: jenkins_include_custom_files
   with_items: "{{ jenkins_custom_files }}"
 
-- name: secrets dir is up to date
+- name: "Copy secrets dir"
   copy:
     src: "{{ jenkins_source_secrets }}"
     dest: "{{ jenkins_home }}/secrets"
@@ -44,7 +43,7 @@
     group: "{{ jenkins_config_group }}"
   when: jenkins_include_secrets
 
-- name: set permissions on secrets dir
+- name: "Set permissions on secrets dir"
   file:
     path: "{{ jenkins_home }}/secrets"
     mode: 0700
