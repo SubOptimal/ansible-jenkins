@@ -3,7 +3,7 @@
 - include: "{{ jenkins_install_via }}/install.yml"
 
 # use a configuration with disabled security otherwise the plugin installation
-# will fail on a re-run if security is configured in a later step
+# will fail on a re-run, as security is configured in a later step
 - include: "pre-configure-jenkins.yml"
 
 - include: "{{ jenkins_install_via }}/start.yml"
